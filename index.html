@@ -1,3 +1,653 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>𝐂𝐀𝐏𝐓𝐀𝐈𝐍</title>
+
+<style>
+
+#overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(8px);
+opacity:0;
+visibility:hidden;
+transition:.4s;
+z-index:99;
+}
+
+#overlay.show{
+opacity:1;
+visibility:visible;
+}
+
+#box{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%) scale(.8);
+width:90%;
+max-width:500px;
+max-height:80vh;
+padding:25px;
+background:#111;
+border:1px solid #ffffff30;
+border-radius:25px;
+text-align:center;
+opacity:0;
+visibility:hidden;
+transition:.4s;
+z-index:100;
+overflow-y:auto;
+}
+
+#box.show{
+opacity:1;
+visibility:visible;
+transform:translate(-50%,-50%) scale(1);
+}
+
+.photo{
+width:100%;
+margin-top:20px;
+border-radius:20px;
+}
+
+audio{
+width:100%;
+margin-top:20px;
+}
+
+button{
+margin-top:20px;
+padding:10px 20px;
+border:none;
+border-radius:15px;
+cursor:pointer;
+}
+
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+min-height:100vh;
+background:
+radial-gradient(circle,#333,transparent 30%),
+linear-gradient(135deg,#000,#111);
+color:white;
+font-family:tahoma;
+overflow-y:auto;
+}
+
+body:before{
+content:"";
+position:fixed;
+inset:0;
+background-image:radial-gradient(#fff 1px,transparent 1px);
+background-size:40px 40px;
+opacity:.2;
+animation:bg 20s linear infinite;
+pointer-events:none;
+}
+
+@keyframes bg{
+to{background-position:0 500px}
+}
+
+
+.hero{
+height:300px;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+}
+
+
+.logo{
+font-size:55px;
+letter-spacing:10px;
+font-weight:900;
+background:linear-gradient(90deg,#fff,#777,#fff);
+-webkit-background-clip:text;
+color:transparent;
+animation:up 3s infinite;
+}
+
+
+@keyframes up{
+50%{transform:translateY(-15px)}
+}
+
+
+.sub{
+color:#aaa;
+margin-top:20px;
+letter-spacing:5px;
+}
+
+
+.cards{
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
+}
+
+
+.card{
+width:220px;
+height:280px;
+border-radius:30px;
+background:#ffffff15;
+border:1px solid #ffffff40;
+backdrop-filter:blur(15px);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+transition:.5s;
+animation:show 1s;
+}
+
+
+.card:hover{
+transform:
+rotateY(20deg)
+translateY(-20px)
+scale(1.05);
+box-shadow:0 0 40px #fff5;
+}
+
+
+@keyframes show{
+from{
+opacity:0;
+transform:translateY(100px);
+}
+}
+
+#login{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.8);
+backdrop-filter:blur(10px);
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+#login h1{
+margin-bottom:25px;
+font-size:35px;
+}
+
+#login button{
+width:220px;
+padding:15px;
+margin:10px;
+font-size:20px;
+border:none;
+border-radius:15px;
+cursor:pointer;
+}
+
+#login{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.8);
+backdrop-filter:blur(10px);
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+</style>
+
+</head>
+
+<script>
+
+let musics = ["Navazesham Kon.mp3"];
+
+let photos = ["photo1.jpg"];
+
+async function loadFiles(){
+
+let res = await fetch(
+`https://api.github.com/repos/${githubUser}/${githubRepo}/contents`,
+{
+headers:{
+"Authorization":"Bearer "+githubToken
+}
+}
+);
+
+let files = await res.json();
+
+photos=[];
+musics=[];
+
+files.forEach(file=>{
+
+if(
+file.name.endsWith(".jpg") ||
+file.name.endsWith(".png") ||
+file.name.endsWith(".jpeg")
+){
+
+photos.push(file.download_url);
+
+}
+
+
+if(file.name.endsWith(".mp3")){
+
+musics.push(file.download_url);
+
+}
+
+});
+
+
+}
+
+async function deleteGitHubFile(filename){
+
+let get = await fetch(
+`https://api.github.com/repos/${githubUser}/${githubRepo}/contents/${filename}`,
+{
+headers:{
+"Authorization":"Bearer "+githubToken
+}
+}
+);
+
+let data = await get.json();
+
+
+let del = await fetch(
+`https://api.github.com/repos/${githubUser}/${githubRepo}/contents/${filename}`,
+{
+method:"DELETE",
+
+headers:{
+"Authorization":"Bearer "+githubToken,
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+message:"delete file",
+
+sha:data.sha,
+
+branch:githubBranch
+
+})
+
+});
+
+
+return del.ok;
+
+}
+
+async function addPhoto(){
+
+let input = document.createElement("input");
+
+input.type = "file";
+input.accept = "image/*";
+
+input.onchange = async function(){
+
+let file = input.files[0];
+
+let reader = new FileReader();
+
+reader.onload = async function(){
+
+let base64 = reader.result.split(",")[1];
+
+
+let response = await fetch(
+`https://api.github.com/repos/${githubUser}/${githubRepo}/contents/${file.name}`,
+{
+method:"PUT",
+
+headers:{
+"Authorization":"Bearer "+githubToken,
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+message:"add photo",
+
+content:base64,
+
+branch:githubBranch
+
+})
+
+});
+
+
+if(response.ok){
+
+alert("عکس داخل GitHub ذخیره شد ✅");
+
+}else{
+
+alert("خطا در آپلود عکس ❌");
+
+}
+
+
+}
+
+reader.readAsDataURL(file);
+
+}
+
+input.click();
+
+}
+
+const githubUser = "m50988436-png";
+const githubRepo = "CAPTAIN_SABEGH";
+const githubBranch = "main";
+const githubToken = "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";
+
+const password="mani4636";
+
+function admin(){
+
+let pass=prompt("رمز مدیر را وارد کنید");
+
+if(pass===password){
+
+document.getElementById("login").style.display="none";
+
+document.getElementById("hero").style.display="flex";
+document.getElementById("cards").style.display="flex";
+
+document.getElementById("adminPanel").style.display="block";
+
+}else{
+
+alert("رمز اشتباه است");
+
+}
+
+}
+
+function enterSite(){
+
+document.getElementById("login").style.display="none";
+
+document.getElementById("hero").style.display="flex";
+
+document.getElementById("cards").style.display="flex";
+
+
+}
+
+
+async function addMusic(){
+
+let input = document.createElement("input");
+
+input.type="file";
+input.accept="audio/*";
+
+
+input.onchange=async function(){
+
+let file=input.files[0];
+
+let reader=new FileReader();
+
+
+reader.onload=async function(){
+
+let base64=reader.result.split(",")[1];
+
+
+let response=await fetch(
+`https://api.github.com/repos/${githubUser}/${githubRepo}/contents/${file.name}`,
+{
+method:"PUT",
+
+headers:{
+"Authorization":"Bearer "+githubToken,
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+message:"add music",
+
+content:base64,
+
+branch:githubBranch
+
+})
+
+});
+
+
+if(response.ok){
+
+alert("موزیک داخل GitHub ذخیره شد ✅");
+
+}else{
+
+alert("خطا در آپلود موزیک ❌");
+
+}
+
+
+}
+
+
+reader.readAsDataURL(file);
+
+
+}
+
+
+input.click();
+
+}
+
+async function deletePhoto(){
+
+if(photos.length===0){
+
+alert("عکسی وجود ندارد");
+return;
+
+}
+
+
+let list="کدام عکس حذف شود؟\n\n";
+
+
+photos.forEach((p,i)=>{
+
+list += `${i+1} - ${p.split("/").pop()}\n`;
+
+});
+
+
+let choice = prompt(list);
+
+
+let index = Number(choice)-1;
+
+
+if(index < 0 || index >= photos.length){
+
+alert("شماره اشتباه است");
+return;
+
+}
+
+
+let filename = photos[index].split("/").pop();
+
+
+let ok = await deleteGitHubFile(filename);
+
+
+if(ok){
+
+alert("عکس حذف شد ✅");
+
+loadFiles();
+
+}else{
+
+alert("خطا در حذف ❌");
+
+}
+
+}
+
+async function deleteMusic(){
+
+if(musics.length===0){
+
+alert("موزیکی وجود ندارد");
+return;
+
+}
+
+
+let list="کدام موزیک حذف شود؟\n\n";
+
+
+musics.forEach((m,i)=>{
+
+list += `${i+1} - ${m.split("/").pop()}\n`;
+
+});
+
+
+let choice = prompt(list);
+
+
+let index = Number(choice)-1;
+
+
+if(index < 0 || index >= musics.length){
+
+alert("شماره اشتباه است");
+return;
+
+}
+
+
+let filename = musics[index].split("/").pop();
+
+
+let ok = await deleteGitHubFile(filename);
+
+
+if(ok){
+
+alert("موزیک حذف شد ✅");
+
+loadFiles();
+
+}else{
+
+alert("خطا در حذف ❌");
+
+}
+
+}
+
+</script>
+
+
+
+<body>
+
+<div id="overlay" onclick="closeBox()"></div>
+
+<div id="box">
+
+<h2 id="title"></h2>
+
+<div id="content"></div>
+
+<button onclick="closeBox()">✕ بستن</button>
+
+</div>
+
+<script>
+
+function openBox(type){
+
+document.getElementById("overlay").classList.add("show");
+document.getElementById("box").classList.add("show");
+
+if(type=="photo"){
+
+document.getElementById("title").innerHTML="PHOTO";
+
+let html="";
+
+photos.forEach(function(photo){
+
+html += `
+<img src="${photo}" class="photo">
+`;
+
+});
+
+document.getElementById("content").innerHTML = html;
+
+}
+
+if(type=="music"){
+
+document.getElementById("title").innerHTML="MUSIC";
+
+let html="";
+
+musics.forEach(function(music){
+
+html += `
+<audio controls>
+<source src="${music}">
+</audio>
+`;
+
+});
+
+document.getElementById("content").innerHTML=html;
+
+}
+
+}
+
+function closeBox(){
+
 document.getElementById("overlay").classList.remove("show");
 document.getElementById("box").classList.remove("show");
 
