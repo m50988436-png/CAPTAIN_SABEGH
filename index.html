@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>𝐂𝐀𝐏𝐓𝐀𝐈𝐍</title>
+
+<style>
+
+#overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.75);
+backdrop-filter:blur(8px);
+opacity:0;
+visibility:hidden;
+transition:.4s;
+z-index:99;
+}
+
+#overlay.show{
+opacity:1;
+visibility:visible;
+}
+
+#box{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%) scale(.8);
+width:90%;
+max-width:500px;
+padding:25px;
+background:#111;
+border:1px solid #ffffff30;
+border-radius:25px;
+text-align:center;
+opacity:0;
+visibility:hidden;
+transition:.4s;
+z-index:100;
+}
+
+#box.show{
+opacity:1;
+visibility:visible;
+transform:translate(-50%,-50%) scale(1);
+}
+
+.photo{
+width:100%;
+border-radius:20px;
+}
+
+audio{
+width:100%;
+margin-top:20px;
+}
+
+button{
+margin-top:20px;
+padding:10px 20px;
+border:none;
+border-radius:15px;
+cursor:pointer;
+}
+
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+min-height:100vh;
+background:
+radial-gradient(circle,#333,transparent 30%),
+linear-gradient(135deg,#000,#111);
+color:white;
+font-family:tahoma;
+overflow-y:auto;
+}
+
+body:before{
+content:"";
+position:fixed;
+inset:0;
+background-image:radial-gradient(#fff 1px,transparent 1px);
+background-size:40px 40px;
+opacity:.2;
+animation:bg 20s linear infinite;
+}
+
+@keyframes bg{
+to{background-position:0 500px}
+}
+
+
+.hero{
+height:300px;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+}
+
+
+.logo{
+font-size:55px;
+letter-spacing:10px;
+font-weight:900;
+background:linear-gradient(90deg,#fff,#777,#fff);
+-webkit-background-clip:text;
+color:transparent;
+animation:up 3s infinite;
+}
+
+
+@keyframes up{
+50%{transform:translateY(-15px)}
+}
+
+
+.sub{
+color:#aaa;
+margin-top:20px;
+letter-spacing:5px;
+}
+
+
+.cards{
+display:flex;
+justify-content:center;
+gap:20px;
+flex-wrap:wrap;
+}
+
+
+.card{
+width:220px;
+height:280px;
+border-radius:30px;
+background:#ffffff15;
+border:1px solid #ffffff40;
+backdrop-filter:blur(15px);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+transition:.5s;
+animation:show 1s;
+}
+
+
+.card:hover{
+transform:
+rotateY(20deg)
+translateY(-20px)
+scale(1.05);
+box-shadow:0 0 40px #fff5;
+}
+
+
+@keyframes show{
+from{
+opacity:0;
+transform:translateY(100px);
+}
+}
+
+</style>
+</head>
+
+
+
+<body>
+
+<div id="overlay" onclick="closeBox()"></div>
+
+<div id="box">
+
+<h2 id="title"></h2>
+
+<div id="content"></div>
+
+<button onclick="closeBox()">✕ بستن</button>
+
+</div>
+
+<script>
+
+function openBox(type){
+
+document.getElementById("overlay").classList.add("show");
+document.getElementById("box").classList.add("show");
+
+if(type=="photo"){
+
+document.getElementById("title").innerHTML="PHOTO";
+
+document.getElementById("content").innerHTML=`
+
+<img src="photo1.jpg" class="photo">
+
+`;
+
+}
+
+if(type=="music"){
+
+document.getElementById("title").innerHTML="MUSIC";
+
+document.getElementById("content").innerHTML=`
+
+<audio controls autoplay>
+
+<source src="Navazesham Kon.mp3" type="audio/mpeg">
+
+</audio>
+
+`;
+
+}
+
+}
+
+function closeBox(){
+
+document.getElementById("overlay").classList.remove("show");
+document.getElementById("box").classList.remove("show");
+
+}
+
+</script>
+
+
+<div class="hero">
+
+<div class="logo">
+𝐂𝐀𝐏𝐓𝐀𝐈𝐍
+</div>
+
+<div class="sub">
+LUXURY DIGITAL GALLERY
+</div>
+
+</div>
+
+
+<div class="cards">
+
+<div class="card" onclick="openBox('photo')">
+PHOTO
+</div>
+
+<div class="card" onclick="openBox('music')">
+MUSIC
+</div>
+
+</div>
+
+
+</body>
+</html>
