@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Test Secret
+      - name: Check Secret
         run: |
-          echo "Captain system is ready"
+          echo "Captain API is working"
+          echo "Token exists: ${{ secrets.CAPTAIN_TOKEN != '' }}"
