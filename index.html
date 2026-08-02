@@ -244,6 +244,9 @@ z-index:9999;
 
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js"></script>
+
+
 </head>
 
 <script>
@@ -286,8 +289,6 @@ file.name.endsWith(".mp3")
 )
 .map(file => file.download_url);
 
-}
-
 let coverRes = await fetch(
 `https://api.github.com/repos/${githubUser}/${githubRepo}/contents/covers`
 );
@@ -301,6 +302,8 @@ file.name.endsWith(".png") ||
 file.name.endsWith(".jpeg")
 )
 .map(file => file.download_url);
+
+} 
 
 function playMusic(url){
 
@@ -323,6 +326,52 @@ audio.pause();
 audio.currentTime=0;
 
 document.getElementById("player").style.display="none";
+
+}
+
+async function getCover(url){
+
+return new Promise((resolve)=>{
+
+window.jsmediatags.read(url,{
+
+onSuccess:function(tag){
+
+if(tag.tags.picture){
+
+let picture = tag.tags.picture;
+
+let base64 = "";
+
+for(let i=0;i<picture.data.length;i++){
+base64 += String.fromCharCode(picture.data[i]);
+}
+
+let image =
+"data:" +
+picture.format +
+";base64," +
+btoa(base64);
+
+resolve(image);
+
+}else{
+
+resolve("photos/captain.jpg");
+
+}
+
+},
+
+onError:function(){
+
+resolve("photos/captain.jpg");
+
+}
+
+});
+
+});
 
 }
 
@@ -354,7 +403,7 @@ document.getElementById("player").style.display="none";
 
 <script>
 
-function openBox(type){
+async function openBox(type){
 
 document.getElementById("closeBtn").style.display="block";
 
@@ -385,12 +434,15 @@ document.getElementById("title").innerHTML="MUSIC";
 
 let html="";
 
-musics.forEach(function(music,index){
+for(const music of musics){
 
-let fileName = music.split("/").pop();
+let fileName = decodeURIComponent(
+music.split("/").pop()
+);
+
 let musicName = fileName.replace(".mp3","");
 
-let cover = covers[index] || "captain.jpg";
+let cover = await getCover(music);
 
 html += `
 <div style="
@@ -408,12 +460,7 @@ object-fit:cover;
 border-radius:20px;
 ">
 
-<h3 style="
-margin-top:15px;
-font-size:22px;
-">
-${musicName}
-</h3>
+<h3>${musicName}</h3>
 
 <button onclick="playMusic('${music}')">
 ▶ PLAY
@@ -422,7 +469,7 @@ ${musicName}
 </div>
 `;
 
-});
+}
 
 document.getElementById("content").innerHTML=html;
 
