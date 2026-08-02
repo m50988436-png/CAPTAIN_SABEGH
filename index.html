@@ -193,10 +193,11 @@ left:50%;
 transform:translateX(-50%);
 width:90%;
 max-width:500px;
-z-index:200;
 background:#111;
 padding:10px;
 border-radius:20px;
+display:none;
+z-index:9999;
 }
 
 
@@ -295,14 +296,13 @@ audio.play();
 
 <h2 id="title"></h2>
 
-<div id="player">
-<audio id="mainAudio" controls></audio>
-</div>
-
 <div id="content"></div>
 
-<button onclick="closeBox()">✕ بستن</button>
+</div>
 
+<div id="player">
+<audio id="mainAudio" controls></audio>
+<button onclick="closeBox()">✕ بستن</button>
 </div>
 
 <script>
@@ -313,6 +313,8 @@ document.getElementById("overlay").classList.add("show");
 document.getElementById("box").classList.add("show");
 
 if(type=="photo"){
+
+document.getElementById("player").style.display="none";
 
 document.getElementById("title").innerHTML="PHOTO";
 
@@ -331,6 +333,8 @@ document.getElementById("content").innerHTML = html;
 }
 
 if(type=="music"){
+
+document.getElementById("player").style.display="block";
 
 document.getElementById("title").innerHTML="MUSIC";
 
