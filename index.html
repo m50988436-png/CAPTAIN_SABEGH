@@ -219,9 +219,8 @@ z-index:9999;
 
 <script>
 
-let musics = ["Navazesham Kon.mp3"];
-
 let photos = ["photo1.jpg"];
+let musics = ["Navazesham Kon.mp3"];
 
 async function loadFiles(){
 
@@ -351,7 +350,7 @@ alert("عکس داخل GitHub ذخیره شد ✅");
 
 }else{
 
-alert("خطا در آپلود عکس ❌");
+alert(response.status);
 
 }
 
@@ -386,6 +385,8 @@ document.getElementById("cards").style.display="flex";
 
 document.getElementById("adminPanel").style.display="block";
 
+loadFiles();
+
 }else{
 
 alert("رمز اشتباه است");
@@ -401,6 +402,8 @@ document.getElementById("login").style.display="none";
 document.getElementById("hero").style.display="flex";
 
 document.getElementById("cards").style.display="flex";
+
+loadFiles();
 
 
 }
