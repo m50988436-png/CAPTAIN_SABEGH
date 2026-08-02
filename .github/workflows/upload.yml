@@ -5,15 +5,33 @@ on:
     inputs:
       filename:
         required: true
+        type: string
       content:
         required: true
+        type: string
 
 jobs:
   upload:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
-    - name: Upload file
-      run: |
-        echo "Uploading ${{ inputs.filename }}"
-        echo "Captain API Ready"
+      - name: Upload file
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.CAPTAIN_TOKEN }}
+          script: |
+            const filename = "${{ inputs.filename }}";
+            const content = "${{ inputs.content }}";
+
+            await github.rest.repos.createOrUpdateFileContents({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path: filename,
+              message: "Captain upload",
+              content: content
+            });
+
+            console.log("Uploaded:", filename);
