@@ -186,6 +186,20 @@ align-items:center;
 z-index:999;
 }
 
+#player{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+width:90%;
+max-width:500px;
+z-index:200;
+background:#111;
+padding:10px;
+border-radius:20px;
+}
+
+
 #login h1{
 margin-bottom:25px;
 font-size:35px;
@@ -258,6 +272,16 @@ file.name.endsWith(".mp3")
 
 }
 
+function playMusic(url){
+
+let audio=document.getElementById("mainAudio");
+
+audio.src=url;
+
+audio.play();
+
+}
+
 
 </script>
 
@@ -270,6 +294,10 @@ file.name.endsWith(".mp3")
 <div id="box">
 
 <h2 id="title"></h2>
+
+<div id="player">
+<audio id="mainAudio" controls></audio>
+</div>
 
 <div id="content"></div>
 
@@ -311,9 +339,9 @@ let html="";
 musics.forEach(function(music){
 
 html += `
-<audio controls>
-<source src="${music}">
-</audio>
+<button onclick="playMusic('${music}')">
+▶ پخش
+</button>
 `;
 
 });
