@@ -253,7 +253,6 @@ z-index:9999;
 
 let photos = [];
 let musics = [];
-let covers = [];
 
 const githubUser = "m50988436-png";
 const githubRepo = "CAPTAIN_SABEGH";
@@ -293,18 +292,6 @@ let coverRes = await fetch(
 `https://api.github.com/repos/${githubUser}/${githubRepo}/contents/covers`
 );
 
-let coverFiles = await coverRes.json();
-
-covers = coverFiles
-.filter(file =>
-file.name.endsWith(".jpg") ||
-file.name.endsWith(".png") ||
-file.name.endsWith(".jpeg")
-)
-.map(file => file.download_url);
-
-} 
-
 function playMusic(url){
 
 let audio=document.getElementById("mainAudio");
@@ -329,51 +316,6 @@ document.getElementById("player").style.display="none";
 
 }
 
-async function getCover(url){
-
-return new Promise((resolve)=>{
-
-window.jsmediatags.read(url,{
-
-onSuccess:function(tag){
-
-if(tag.tags.picture){
-
-let picture = tag.tags.picture;
-
-let base64 = "";
-
-for(let i=0;i<picture.data.length;i++){
-base64 += String.fromCharCode(picture.data[i]);
-}
-
-let image =
-"data:" +
-picture.format +
-";base64," +
-btoa(base64);
-
-resolve(image);
-
-}else{
-
-resolve("photos/captain.jpg");
-
-}
-
-},
-
-onError:function(){
-
-resolve("photos/captain.jpg");
-
-}
-
-});
-
-});
-
-}
 
 
 </script>
@@ -442,7 +384,7 @@ music.split("/").pop()
 
 let musicName = fileName.replace(".mp3","");
 
-let cover = await getCover(music);
+let cover = "photos/captain.jpg";
 
 html += `
 <div style="
