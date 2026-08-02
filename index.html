@@ -244,8 +244,6 @@ z-index:9999;
 
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js"></script>
-
 
 </head>
 
@@ -288,9 +286,7 @@ file.name.endsWith(".mp3")
 )
 .map(file => file.download_url);
 
-let coverRes = await fetch(
-`https://api.github.com/repos/${githubUser}/${githubRepo}/contents/covers`
-);
+}
 
 function playMusic(url){
 
