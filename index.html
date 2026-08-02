@@ -44,6 +44,21 @@ z-index:100;
 overflow-y:auto;
 }
 
+#closeBtn{
+position:fixed;
+right:20px;
+top:50%;
+transform:translateY(-50%);
+padding:12px 20px;
+border-radius:15px;
+background:#111;
+color:white;
+border:1px solid #fff;
+cursor:pointer;
+z-index:10000;
+display:none;
+}
+
 #box.show{
 opacity:1;
 visibility:visible;
@@ -287,6 +302,7 @@ audio.play();
 </script>
 
 
+<button id="closeBtn" onclick="closeBox()">✕ بستن</button>
 
 <body>
 
@@ -303,18 +319,19 @@ audio.play();
 <div id="player">
 <audio id="mainAudio" controls></audio>
 <button onclick="closeBox()">✕ بستن</button>
+
 </div>
 
 <script>
 
 function openBox(type){
 
+document.getElementById("closeBtn").style.display="block";
+
 document.getElementById("overlay").classList.add("show");
 document.getElementById("box").classList.add("show");
 
 if(type=="photo"){
-
-document.getElementById("player").style.display="none";
 
 document.getElementById("title").innerHTML="PHOTO";
 
@@ -357,6 +374,8 @@ document.getElementById("content").innerHTML=html;
 }
 
 function closeBox(){
+
+document.getElementById("closeBtn").style.display="none";
 
 document.getElementById("overlay").classList.remove("show");
 document.getElementById("box").classList.remove("show");
