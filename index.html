@@ -219,8 +219,44 @@ z-index:9999;
 
 <script>
 
-let photos = ["photo1.jpg"];
-let musics = ["Navazesham Kon.mp3"];
+let photos = [];
+let musics = [];
+
+const githubUser = "m50988436-png";
+const githubRepo = "CAPTAIN_SABEGH";
+
+
+async function loadFiles(){
+
+let photoRes = await fetch(
+`https://api.github.com/repos/${githubUser}/${githubRepo}/contents/photos`
+);
+
+let photoFiles = await photoRes.json();
+
+photos = photoFiles
+.filter(file =>
+file.name.endsWith(".jpg") ||
+file.name.endsWith(".png") ||
+file.name.endsWith(".jpeg")
+)
+.map(file => file.download_url);
+
+
+
+let musicRes = await fetch(
+`https://api.github.com/repos/${githubUser}/${githubRepo}/contents/music`
+);
+
+let musicFiles = await musicRes.json();
+
+musics = musicFiles
+.filter(file =>
+file.name.endsWith(".mp3")
+)
+.map(file => file.download_url);
+
+}
 
 
 </script>
@@ -298,7 +334,9 @@ document.getElementById("box").classList.remove("show");
 </script>
 
 
-
+<script>
+loadFiles();
+</script>
 
 <div class="hero" id="hero">
 
