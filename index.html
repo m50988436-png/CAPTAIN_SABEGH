@@ -250,6 +250,7 @@ z-index:9999;
 
 let photos = [];
 let musics = [];
+let covers = [];
 
 const githubUser = "m50988436-png";
 const githubRepo = "CAPTAIN_SABEGH";
@@ -286,6 +287,20 @@ file.name.endsWith(".mp3")
 .map(file => file.download_url);
 
 }
+
+let coverRes = await fetch(
+`https://api.github.com/repos/${githubUser}/${githubRepo}/contents/covers`
+);
+
+let coverFiles = await coverRes.json();
+
+covers = coverFiles
+.filter(file =>
+file.name.endsWith(".jpg") ||
+file.name.endsWith(".png") ||
+file.name.endsWith(".jpeg")
+)
+.map(file => file.download_url);
 
 function playMusic(url){
 
@@ -370,12 +385,41 @@ document.getElementById("title").innerHTML="MUSIC";
 
 let html="";
 
-musics.forEach(function(music){
+musics.forEach(function(music,index){
+
+let fileName = music.split("/").pop();
+let musicName = fileName.replace(".mp3","");
+
+let cover = covers[index] || "captain.jpg";
 
 html += `
+<div style="
+margin:20px;
+padding:20px;
+border-radius:20px;
+background:#ffffff10;
+">
+
+<img src="${cover}"
+style="
+width:220px;
+height:220px;
+object-fit:cover;
+border-radius:20px;
+">
+
+<h3 style="
+margin-top:15px;
+font-size:22px;
+">
+${musicName}
+</h3>
+
 <button onclick="playMusic('${music}')">
-▶ پخش
+▶ PLAY
 </button>
+
+</div>
 `;
 
 });
