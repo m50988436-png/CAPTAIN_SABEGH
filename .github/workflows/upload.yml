@@ -2,13 +2,18 @@ name: Captain Upload API
 
 on:
   workflow_dispatch:
+    inputs:
+      filename:
+        required: true
+      content:
+        required: true
 
 jobs:
   upload:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check Secret
-        run: |
-          echo "Captain API is working"
-          echo "Token exists: ${{ secrets.CAPTAIN_TOKEN != '' }}"
+    - name: Upload file
+      run: |
+        echo "Uploading ${{ inputs.filename }}"
+        echo "Captain API Ready"
