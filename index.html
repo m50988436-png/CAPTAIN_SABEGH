@@ -208,9 +208,8 @@ left:50%;
 transform:translateX(-50%);
 width:90%;
 max-width:500px;
-background:#111;
-padding:10px;
-border-radius:20px;
+background:transparent;
+padding:0;
 display:none;
 z-index:9999;
 }
@@ -296,6 +295,20 @@ audio.src=url;
 
 audio.play();
 
+document.getElementById("player").style.display="block";
+
+
+}
+
+function stopMusic(){
+
+let audio=document.getElementById("mainAudio");
+
+audio.pause();
+audio.currentTime=0;
+
+document.getElementById("player").style.display="none";
+
 }
 
 
@@ -317,8 +330,10 @@ audio.play();
 </div>
 
 <div id="player">
+
 <audio id="mainAudio" controls></audio>
-<button onclick="closeBox()">✕ بستن</button>
+
+<button onclick="stopMusic()">✕</button>
 
 </div>
 
@@ -350,8 +365,6 @@ document.getElementById("content").innerHTML = html;
 }
 
 if(type=="music"){
-
-document.getElementById("player").style.display="block";
 
 document.getElementById("title").innerHTML="MUSIC";
 
