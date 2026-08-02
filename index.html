@@ -307,37 +307,43 @@ async function addPhoto(){
 
 let input = document.createElement("input");
 
-input.type = "file";
-input.accept = "image/*";
-
-input.onchange = async function(){
-
-let file = input.files[0];
-
-let reader = new FileReader();
-
-reader.onload = async function(){
-
-let base64 = reader.result.split(",")[1];
+input.type="file";
+input.accept="image/*";
 
 
-let response = await fetch(
-`https://api.github.com/repos/${githubUser}/${githubRepo}/contents/${file.name}`,
+input.onchange=async function(){
+
+let file=input.files[0];
+
+
+let reader=new FileReader();
+
+
+reader.onload=async function(){
+
+let base64=reader.result.split(",")[1];
+
+
+let response=await fetch(
+"https://api.github.com/repos/m50988436-png/CAPTAIN_SABEGH/actions/workflows/upload.yml/dispatches",
 {
-method:"PUT",
+method:"POST",
 
 headers:{
-"Authorization":"Bearer "+githubToken,
-"Content-Type":"application/json"
+"Accept":"application/vnd.github+json"
 },
 
 body:JSON.stringify({
 
-message:"add photo",
+ref:"main",
 
-content:base64,
+inputs:{
 
-branch:githubBranch
+filename:file.name,
+
+content:base64
+
+}
 
 })
 
@@ -346,20 +352,23 @@ branch:githubBranch
 
 if(response.ok){
 
-alert("عکس داخل GitHub ذخیره شد ✅");
+alert("عکس ارسال شد ✅");
 
 }else{
 
-alert(response.status);
+alert("خطا در ارسال عکس ❌");
 
 }
 
 
-}
+};
+
 
 reader.readAsDataURL(file);
 
-}
+
+};
+
 
 input.click();
 
@@ -368,7 +377,6 @@ input.click();
 const githubUser = "m50988436-png";
 const githubRepo = "CAPTAIN_SABEGH";
 const githubBranch = "main";
-const githubToken = "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";
 
 const password="mani4636";
 
@@ -411,7 +419,7 @@ loadFiles();
 
 async function addMusic(){
 
-let input = document.createElement("input");
+let input=document.createElement("input");
 
 input.type="file";
 input.accept="audio/*";
@@ -420,6 +428,7 @@ input.accept="audio/*";
 input.onchange=async function(){
 
 let file=input.files[0];
+
 
 let reader=new FileReader();
 
@@ -430,22 +439,25 @@ let base64=reader.result.split(",")[1];
 
 
 let response=await fetch(
-`https://api.github.com/repos/${githubUser}/${githubRepo}/contents/${file.name}`,
+"https://api.github.com/repos/m50988436-png/CAPTAIN_SABEGH/actions/workflows/upload.yml/dispatches",
 {
-method:"PUT",
+method:"POST",
 
 headers:{
-"Authorization":"Bearer "+githubToken,
-"Content-Type":"application/json"
+"Accept":"application/vnd.github+json"
 },
 
 body:JSON.stringify({
 
-message:"add music",
+ref:"main",
 
-content:base64,
+inputs:{
 
-branch:githubBranch
+filename:file.name,
+
+content:base64
+
+}
 
 })
 
@@ -454,22 +466,22 @@ branch:githubBranch
 
 if(response.ok){
 
-alert("موزیک داخل GitHub ذخیره شد ✅");
+alert("موزیک ارسال شد ✅");
 
 }else{
 
-alert("خطا در آپلود موزیک ❌");
+alert("خطا در ارسال موزیک ❌");
 
 }
 
 
-}
+};
 
 
 reader.readAsDataURL(file);
 
 
-}
+};
 
 
 input.click();
