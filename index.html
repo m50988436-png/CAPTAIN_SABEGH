@@ -246,6 +246,32 @@ z-index:9999;
 margin-bottom:50px;
 }
 
+#content h3{
+    margin-top:15px;
+    font-size:22px;
+    white-space:normal;
+    word-break:break-word;
+    overflow-wrap:break-word;
+    text-align:center;
+}
+
+.downloadBtn{
+    width:220px;
+    height:55px;
+    margin-top:20px;
+    border-radius:15px;
+    background:white;
+    color:black;
+    font-size:20px;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.downloadBtn.active{
+    background:#00ff55;
+    color:white;
+}
+
 </style>
 
 
@@ -289,6 +315,33 @@ musics = musicFiles
 file.name.endsWith(".mp3")
 )
 .map(file => file.download_url);
+
+}
+
+async function downloadImage(url,btn){
+
+btn.classList.add("active");
+
+setTimeout(()=>{
+    btn.classList.remove("active");
+},2000);
+
+
+let response = await fetch(url);
+
+let blob = await response.blob();
+
+let randomNumber = Math.floor(10000 + Math.random() * 90000);
+
+let link = document.createElement("a");
+
+link.href = URL.createObjectURL(blob);
+
+link.download = "CAPTAIN-photo-" + randomNumber + ".jpg";
+
+link.click();
+
+URL.revokeObjectURL(link.href);
 
 }
 
@@ -356,12 +409,22 @@ if(type=="photo"){
 
 document.getElementById("title").innerHTML="PHOTO";
 
-let html="";
+let html = "";
 
 photos.forEach(function(photo){
 
 html += `
+<div style="text-align:center;">
+
 <img src="${photo}" class="photo">
+
+<br>
+
+<button class="downloadBtn" onclick="downloadImage('${photo}',this)">
+↑ DOWNLOAD ↑
+</button>
+
+</div>
 `;
 
 });
